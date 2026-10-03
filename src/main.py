@@ -6,7 +6,8 @@ import argparse
 def main():
     cpu_data =get_cpu()
     ram_data =get_ram()
-    display(cpu_data,ram_data)
+    disk_data =get_storage()
+    display(cpu_data,ram_data,disk_data)
 
 def get_cpu():
     cpu = psutil.cpu_percent(interval=1)
@@ -24,14 +25,22 @@ def get_ram():
         "percent": mem.percent,
         "total": byte_convert(mem.total),
     }
-def display(cpu, ram,):
-    print(f"CPU: {cpu['percent']}%")
+def get_storage():
+    storage = psutil.disk_usage("C:\\")
+    return {
+        "percent": storage.percent,
+        "total": byte_convert(storage.total),
+    }
+def display(cpu, ram, disk):
+    print(f"CPU USAGE: {cpu['percent']}%")
     print(f"LOGICAL CORES: {cpu['logical']}")
     print(f"PHYSICAL CORES: {cpu['physical']}")
-    print(f"RAM: {ram['percent']}%")
+    print(f"RAM USAGE: {ram['percent']}%")
     print(f"TOTAL RAM: {ram['total']}GB")
+    print(f"DISK USAGE: {disk['percent']}%")
+    print(f"DISK SPACE: {disk['total']}GB")
 def byte_convert(bytes_value):
     return  round(bytes_value / 1024 ** 3)
     
 if __name__ == "__main__":
-    main()  
+    main()
