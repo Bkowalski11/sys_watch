@@ -1,16 +1,22 @@
 import psutil
-#import time
-import argparse
-#import platform
+import time
+import subprocess
+import os
 
 def main():
-    cpu_data =get_cpu()
-    ram_data =get_ram()
-    disk_data =get_storage()
-    display(cpu_data,ram_data,disk_data)
-
+    try:
+        while True:
+            command = "cls" if os.name == "nt" else "clear"
+            subprocess.run(command, shell=True) 
+            cpu_data = get_cpu()
+            ram_data = get_ram()
+            disk_data = get_storage()
+            display(cpu_data, ram_data, disk_data)
+            time.sleep(1)        
+    except KeyboardInterrupt:
+        print("\nExiting SysWatch.")
 def get_cpu():
-    cpu = psutil.cpu_percent(interval=1)
+    cpu = psutil.cpu_percent(interval=None)
     logi = psutil.cpu_count(logical=True)
     physi = psutil.cpu_count(logical=False)
     return {
@@ -32,13 +38,20 @@ def get_storage():
         "total": byte_convert(storage.total),
     }
 def display(cpu, ram, disk):
-    print(f"CPU USAGE: {cpu['percent']}%")
-    print(f"LOGICAL CORES: {cpu['logical']}")
-    print(f"PHYSICAL CORES: {cpu['physical']}")
-    print(f"RAM USAGE: {ram['percent']}%")
-    print(f"TOTAL RAM: {ram['total']}GB")
-    print(f"DISK USAGE: {disk['percent']}%")
-    print(f"DISK SPACE: {disk['total']}GB")
+    print("=" * 35)
+    print(f"{'SYSTEM MONITOR':^35}")
+    print("=" * 35)
+    print(f"{'Metric':<20} | {'Value'}")
+    print("-" * 35)
+    print(f"{'CPU Usage':<20} | {cpu['percent']}%")
+    print(f"{'Logical Cores':<20} | {cpu['logical']}")
+    print(f"{'Physical Cores':<20} | {cpu['physical']}")
+    print(f"{'RAM Usage':<20} | {ram['percent']}%")
+    print(f"{'Total RAM':<20} | {ram['total']}GB")
+    print(f"{'DISK USAGE':<20} | {disk['percent']}%")
+    print(f"{'DISK SPACE':<20} | {disk['total']}GB")
+    print("=" * 35)
+    print("Press Ctrl+C to exit.")
 def byte_convert(bytes_value):
     return  round(bytes_value / 1024 ** 3)
     
