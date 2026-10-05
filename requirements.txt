@@ -1,2 +1,3 @@
 psutil
-platform
+os
+argparse
